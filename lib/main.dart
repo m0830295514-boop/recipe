@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/model/recipe.dart';
- 
+import 'package:myapp/recipe_detail.dart';
+
 void main() {
   runApp(const RecipeApp());
 }
- 
+
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
- 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Recipe Calculator',
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(
+        textTheme: GoogleFonts.oswaldTextTheme(),
+        appBarTheme: AppBarTheme(
           centerTitle: true,
+          backgroundColor: Colors.pinkAccent,
+          elevation: 0,
+          titleTextStyle: GoogleFonts.oswald(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -23,57 +34,76 @@ class RecipeApp extends StatelessWidget {
     );
   }
 }
- 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
- 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
- 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
- 
+
   final String title;
- 
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
- 
+
 class _MyHomePageState extends State<MyHomePage> {
- 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(widget.title),
       ),
-      body: SafeArea(child: Container(
+      body: SafeArea(
         child: ListView.builder(
-          itemCount: Recipe.samples.length, //Number of items = 4
-          itemBuilder: (BuildContext context, int index) {
-            //itemBuilder will work as for loop to generate
-            //return a widget for each item list
-            return buildRecipeCard(Recipe.samples[index]);
-           },
+          itemCount: Recipe.samples.length,
+          itemBuilder: (context, index) {
+            final recipe = Recipe.samples[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetail(recipe: recipe),
+                  ),
+                );
+              },
+              child: buildRecipeCard(recipe),
+            );
+          },
         ),
-      )),
-    );
-  }
- 
-  Widget buildRecipeCard(Recipe recipe) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          Image(image: AssetImage(recipe.imgUrl)),
-          Text(recipe.imgTitle),
-        ],
       ),
     );
   }
 }
- 
+
+Widget buildRecipeCard(Recipe recipe) {
+  return Card(
+    elevation: 4,
+    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+          child: Image.asset(
+            recipe.imgUrl,
+            height: 180,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            recipe.imgTitle,
+            style: GoogleFonts.oswald(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
