@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:myapp/model/recipe.dart';
-
 class RecipeDetail extends StatelessWidget {
   final Recipe recipe;
 
